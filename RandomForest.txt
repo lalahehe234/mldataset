@@ -1,0 +1,82 @@
+import pandas as pd
+from matplotlib import pyplot as plt
+import seaborn as sns
+from scipy import stats
+import numpy as np
+
+import warnings
+warnings.filterwarnings('ignore')
+
+fraud = pd.read_csv('Fraud_check (1).csv')
+fraud
+fraud.isna().sum()
+
+fraud2 = fraud.copy()
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+fraud2['Encoded_Undergrad'] = le.fit_transform(fraud2['Undergrad'])
+fraud2['Encoded_Marital.Status'] = le.fit_transform(fraud2['Marital.Status'])
+fraud2['Encoded_Taxable.Income'] = le.fit_transform(fraud2['Taxable.Income'])
+fraud2['Encoded_Urban'] = le.fit_transform(fraud2['Urban'])
+fraud2
+
+del fraud2['Undergrad']
+del fraud2['Marital.Status']
+del fraud2['Taxable.Income']
+del fraud2['Urban']
+fraud2
+
+x=fraud2.iloc[:, [0,1,2,3,5]]
+y=fraud2.iloc[:,4]
+x
+
+y
+
+X_train,X_test,y_train,y_test = train_test_split(x,y,test_size = 0.20,random_state = 12345)
+X_train.shape, X_test.shape
+y_train.shape, y_test.shape
+
+from sklearn.ensemble import RandomForestClassifier
+rf_classifier = RandomForestClassifier(criterion='gini', max_depth=7)
+rf_classifier.fit(X_train,y_train)
+
+from sklearn.model_selection import GridSearchCV
+grid_search = GridSearchCV(estimator = rf_classifier, 
+                           param_grid = {'criterion' : ['gini' , 'entropy'],
+                                         'max_depth' : [4,5,6,7,8,9,10] }, 
+                           cv = 5)
+grid_search.fit(x,y)
+
+grid_search.best_params_
+
+grid_search.best_score_
+
+y_pred_train = rf_classifier.predict(X_train)
+y_pred_train
+
+y_pred_test = rf_classifier.predict(X_test)
+
+from sklearn.metrics import accuracy_score,c onfusion_matrix ,classification_report,
+precision_score, recall_score,roc_auc_score, roc_curve
+accuracy_score(y_train,y_pred_train)
+print(confusion_matrix(y_train,y_pred_train))
+print(classification_report(y_train,y_pred_train))
+
+fpr, tpr, thresholds = roc_curve(y, rf_classifier.predict_proba (x)[:,1])
+auc = roc_auc_score(y_train,y_pred_train)
+print('auc accuracy:',auc)
+plt.plot(fpr, tpr, color='red', label='logit model ( area = %0.2f)'%auc)
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel('False Positive Rate or [1 - True Negative Rate]')
+plt.ylabel('True Positive Rate')
+
+accuracy_score(y_test,y_pred_test)
+print(confusion_matrix(y_test,y_pred_test))
+
+from pickle import dump
+dump(rf_classifier,open('fraud_rf_model.pkl','wb'))
+from pickle import load
+loaded_pkl_file = load(open('fraud_rf_model.pkl','rb'))
+predicted_answers = loaded_pkl_file.predict(X_test)
+accuracy_score(y_test,predicted_answers)

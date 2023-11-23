@@ -1,0 +1,32 @@
+from sklearn.linear_model import LinearRegression
+from sklearn import model_selection
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data  = pd.read_csv('Salary_Data.csv')
+data.head()
+
+x = data.iloc[:,:-1]
+y = data.iloc[:,-1]
+print (x.shape)
+print (y.shape)
+
+
+xtrain,xtest,ytrain,ytest = model_selection.train_test_split(x,y,test_size = 0.25,random_state = 0)
+print (xtrain.shape)
+print (ytrain.shape)
+print (xtest.shape)
+print (ytest.shape)
+
+
+model = LinearRegression()
+model.fit(xtrain,ytrain)
+y_pred = model.predict(xtest)
+
+plt.scatter(xtrain,ytrain,color = "red",label = "training")
+plt.plot(xtest,y_pred,color = "blue",linewidth = 3,label = "reg line")
+plt.title("sal vs exp")
+plt.xlabel("yrs exp")
+plt.ylabel("sal")
+plt.show()

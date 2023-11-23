@@ -1,0 +1,25 @@
+from sklearn import naive_bayes
+from sklearn import model_selection
+from sklearn.metrics import confusion_matrix 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set ()
+
+train = pd.read_csv("iris_train.csv")
+test = pd.read_csv("iris_test.csv")
+
+xtrain = train.drop('Species',axis = 1)
+ytrain = train.loc[:,'Species']
+xtest = test.drop('Species',axis = 1)
+ytest = test.loc[:,'Species']
+
+model = GaussianNB()
+model.fit(xtrain,ytrain)
+pred = model.predict(xtest)
+mat = confusion_matrix(pred,ytest)
+names = np.unique(pred)
+sns.heatmap(mat,square = True,annot = True,fmt = 'd',cbar = False,xticklabels = names,yticklabels = names)
+plt.xlabel("Truth")
+plt.ylabel("Predicted")

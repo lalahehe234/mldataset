@@ -1,0 +1,57 @@
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import accuracy_score,precision_score,recall_score,confusion_matrix
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.svm import SVC
+import pandas as pd
+import numpy as np
+import seaborn as sns
+from matplotlib import pyplot as plt
+
+salary = pd.read_csv('SalaryData_Train (1).csv')
+salary_test = pd.read_csv('SalaryData_Test.csv')
+salary
+
+salary2 =  salary.copy()
+le = LabelEncoder()
+salary2['workclass'] = le.fit_transform(salary2['workclass'])
+salary2['education'] = le.fit_transform(salary2['education'])
+salary2['maritalstatus'] = le.fit_transform(salary2['maritalstatus'])
+salary2['occupation'] = le.fit_transform(salary2['occupation'])
+salary2['relationship'] = le.fit_transform(salary2['relationship'])
+salary2['race'] = le.fit_transform(salary2['race'])
+salary2['sex'] = le.fit_transform(salary2['sex'])
+salary2['native'] = le.fit_transform(salary2['native'])
+salary2['Salary'] = le.fit_transform(salary2['Salary'])
+
+salary_test['workclass'] = le.fit_transform(salary_test['workclass'])
+salary_test['education'] = le.fit_transform(salary_test['education'])
+salary_test['maritalstatus'] = le.fit_transform(salary_test['maritalstatus'])
+salary_test['occupation'] = le.fit_transform(salary_test['occupation'])
+salary_test['relationship'] = le.fit_transform(salary_test['relationship'])
+salary_test['race'] = le.fit_transform(salary_test['race'])
+salary_test['sex'] = le.fit_transform(salary_test['sex'])
+salary_test['native'] = le.fit_transform(salary_test['native'])
+salary_test['Salary'] = le.fit_transform(salary_test['Salary'])
+salary2
+
+x = salary2.drop(labels='Salary', axis=1)
+y = salary2[['Salary']]
+x_test = salary_test.drop(labels='Salary', axis=1)
+y_test = salary_test[['Salary']]
+y.shape, y_test.shape
+
+columns = x.columns
+sc = StandardScaler()
+x_scaled = sc.fit_transform(x)
+x_scaled = pd.DataFrame(x_scaled, columns=columns)
+y2 = y.copy()
+y2 = y2.values.ravel()
+
+
+svm = SVC(kernel='linear')
+svm.fit(x_scaled,y2)
+y_pred = svm.predict(x_test)
+print('Accuracy :', round(accuracy_score(y_test,y_pred),4))
+print('Precision :', round(precision_score(y_test,y_pred),4))
+print('Recall :', round(recall_score(y_test,y_pred),4))
+print('Confusion matrix :\n', confusion_matrix(y_test,y_pred))
