@@ -1,0 +1,12 @@
+sudo su -
+yum update -y
+yum install -y httpd
+mkdir temp
+cd temp
+wget "link"
+unzip "file.zip"
+cd "file"
+ls -lrt
+mv * /var/www/html
+systemctl enable httpd
+systemctl start httpd
