@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BIO DATA</title>
+</head>
+
+<body>
+    <h1>Student Bio Data Form</h1>
+    <form id="studentForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required><br>
+        <label for="age">Age:</label>
+        <input type="text" id="age" required><br>
+        <label for="course">Course:</label>
+        <input type="text" id="course" required><br>
+        <button type="button" onclick="submitBiodata()">Submit</button>
+    </form>
+    <div id="biodata"></div>
+    <script>
+        function submitBiodata() {
+            var name = document.getElementById("name").value;
+            var age = document.getElementById("age").value;
+            var course = document.getElementById("course").value;
+            var biodata = "Name: " + name + "<br>" +
+                          "Age: " + age + "<br>" +
+                          "Course: " + course;
+            document.getElementById("biodata").innerHTML = "<h2>Student Bio DATA</h2>" + biodata;
+        }
+    </script>
+</body>
+
+</html>

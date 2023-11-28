@@ -1,0 +1,48 @@
+import React, { useState } from 'react';
+
+const Calculator = () => {
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState('');
+
+  const handleClick = (value) => setInput((prevInput) => prevInput + value);
+  const handleClear = () => {
+    setInput('');
+    setResult('');
+  };
+
+  const handleCalculate = () => {
+    try {
+      setResult(eval(input).toString());
+    } catch (error) {
+      setResult('Error');
+    }
+  };
+
+  const renderButton = (value) => (
+    <button key={value} onClick={() => handleClick(value)}>
+      {value}
+    </button>
+  );
+
+  return (
+    <div>
+      <h2>Simple Calculator</h2>
+      <input type="text" value={input} readOnly />
+      <br />
+      {[1, 2, 3, '+'].map(renderButton)}
+      <br />
+      {[4, 5, 6, '-'].map(renderButton)}
+      <br />
+      {[7, 8, 9, '*'].map(renderButton)}
+      <br />
+      {[0, '.', '/'].map(renderButton)} {/* Removed 'C' from the clear button */}
+      <button onClick={handleClear}>C</button> {/* Updated to handleClear */}
+      <br />
+      <button onClick={handleCalculate}>=</button>
+      <br />
+      <p>Result: {result}</p>
+    </div>
+  );
+};
+
+export default Calculator;
